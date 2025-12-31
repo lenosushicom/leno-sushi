@@ -1,24 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Leno Sushi MVP</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leno Sushi - Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-5">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-        <h1 class="text-2xl font-bold mb-4">Leno Sushi</h1>
-        <form action="https://api.web3forms.com/submit" method="POST">
-            <input type="hidden" name="access_key" value="5bca5ef0-c823-455a-94a2-9a5de6c6ea88">
-            <div class="mb-4">
-                <label>Sushi Box ($20)</label>
-                <input type="number" name="quantity" value="1" class="border p-1 w-full">
+<body class="bg-gray-50 pb-20">
+    <header class="bg-black text-white p-4 text-center font-bold text-xl">LENO SUSHI</header>
+    
+    <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" class="max-w-md mx-auto p-4">
+        <input type="hidden" name="access_key" value="5bca5ef0-c823-455a-94a2-9a5de6c6ea88">
+        <input type="hidden" name="subject" value="New Order Request - Leno Sushi">
+        
+        <h2 class="font-bold text-lg mb-4">1. Select your Dishes</h2>
+        <div id="menu" class="space-y-4 mb-8">
+            <div class="bg-white p-3 rounded shadow flex items-center gap-4">
+                <img src="https://placehold.co/80x80?text=Sushi" class="rounded">
+                <div class="flex-1">
+                    <p class="font-bold">Salmon Roll ($12)</p>
+                    <p class="text-xs text-gray-500">Salmon, Avocado, Rice</p>
+                    <input type="number" name="Salmon_Roll_Qty" min="0" value="0" class="border w-16 mt-1 rounded px-1">
+                </div>
             </div>
-            <div class="mb-4">
-                <label>Delivery Date</label>
-                <input type="date" name="date" required class="border p-1 w-full">
+            <div class="bg-white p-3 rounded shadow flex items-center gap-4">
+                <img src="https://placehold.co/80x80?text=Roll" class="rounded">
+                <div class="flex-1">
+                    <p class="font-bold">California Roll ($10)</p>
+                    <p class="text-xs text-gray-500">Crab, Cucumber, Avocado</p>
+                    <input type="number" name="California_Roll_Qty" min="0" value="0" class="border w-16 mt-1 rounded px-1">
+                </div>
             </div>
-            <button type="submit" class="bg-black text-white px-4 py-2 w-full">Request Order</button>
-        </form>
-    </div>
+        </div>
+
+        <h2 class="font-bold text-lg mb-4">2. Schedule Delivery</h2>
+        <div class="bg-white p-4 rounded shadow space-y-3">
+            <p class="text-xs text-red-600 font-bold italic">Orders for next week close Friday at 9 PM.</p>
+            <label class="block text-sm">Delivery Date</label>
+            <input type="date" name="delivery_date" required class="w-full border p-2 rounded">
+            
+            <label class="block text-sm">Time Slot</label>
+            <select name="delivery_slot" required class="w-full border p-2 rounded">
+                <option value="10am-11am">10:00 AM - 11:00 AM</option>
+                <option value="3pm-4pm">03:00 PM - 04:00 PM</option>
+            </select>
+        </div>
+
+        <h2 class="font-bold text-lg my-4">3. Your Info</h2>
+        <div class="bg-white p-4 rounded shadow space-y-3">
+            <input type="text" name="name" placeholder="Full Name" required class="w-full border p-2 rounded">
+            <input type="email" name="email" placeholder="Email Address" required class="w-full border p-2 rounded">
+            <input type="tel" name="phone" placeholder="Phone Number" required class="w-full border p-2 rounded">
+            <textarea name="modifications" placeholder="Modifications/Allergies?" class="w-full border p-2 rounded"></textarea>
+        </div>
+
+        <button type="submit" class="fixed bottom-4 left-4 right-4 bg-orange-600 text-white font-bold py-4 rounded-full shadow-lg">Request Order</button>
+    </form>
+    <script>
+    const dateInput = document.querySelector('input[name="delivery_date"]');
+    const now = new Date();
+    
+    // Logic: If past Friday 9PM, first available day is the week after next.
+    // For this MVP: We set the minimum selectable date to tomorrow.
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.min = tomorrow.toISOString().split('T')[0];
+
+    document.getElementById('orderForm').onsubmit = function(e) {
+        const salmon = parseInt(document.getElementsByName('Salmon_Roll_Qty')[0].value);
+        const cali = parseInt(document.getElementsByName('California_Roll_Qty')[0].value);
+        
+        if (salmon === 0 && cali === 0) {
+            alert("Please add at least one item to your cart.");
+            return false;
+        }
+        return true;
+    };
+</script>
 </body>
 </html>
