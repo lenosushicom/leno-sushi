@@ -2,81 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leno Sushi - Order</title>
+    <title>Leno Sushi - MVP</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 pb-24">
+<body class="bg-gray-50 pb-32">
     <header class="bg-black text-white p-4 text-center font-bold text-xl uppercase tracking-widest">LENO SUSHI</header>
-    
-    <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" class="max-w-md mx-auto p-4">
-        <input type="hidden" name="access_key" value="5bca5ef0-c823-455a-94a2-9a5de6c6ea88">
-        <input type="hidden" name="subject" value="New Order Request - Leno Sushi">
-        <input type="hidden" name="redirect" value="https://lenosushicom.github.io/leno-sushi/thanks.html">
-        
-        <h2 class="font-bold text-lg mb-4">1. Select your Dishes</h2>
-        <div id="menu" class="space-y-4 mb-8">
-            <div class="bg-white p-3 rounded shadow flex items-center gap-4">
-                <img src="https://placehold.co/80x80?text=Salmon" class="rounded">
-                <div class="flex-1">
-                    <p class="font-bold">Salmon Roll ($12)</p>
-                    <p class="text-xs text-gray-500">Salmon, Avocado, Rice</p>
-                    <input type="number" name="Salmon_Roll_Qty" min="0" value="0" class="border w-16 mt-1 rounded px-1">
-                </div>
+
+    <div id="app" class="max-w-md mx-auto p-4">
+        <h2 class="font-bold text-lg mb-4">1. Menu</h2>
+        <div id="menu-container" class="space-y-4 mb-8"></div>
+
+        <h2 class="font-bold text-lg mb-4">2. Your Selection</h2>
+        <div id="cart-container" class="bg-white p-4 rounded shadow mb-8 text-sm">
+            <p class="text-gray-500 italic">Cart is empty...</p>
+        </div>
+
+        <form action="https://api.web3forms.com/submit" method="POST" id="orderForm">
+            <input type="hidden" name="access_key" value="5bca5ef0-c823-455a-94a2-9a5de6c6ea88">
+            <input type="hidden" name="redirect" value="https://lenosushicom.github.io/leno-sushi/thanks.html">
+            <input type="hidden" name="cart_details" id="hidden-cart-data">
+
+            <h2 class="font-bold text-lg mb-4">3. Schedule</h2>
+            <div class="bg-white p-4 rounded shadow space-y-3">
+                <label class="block text-sm font-medium">Delivery Date</label>
+                <input type="date" name="delivery_date" id="date-picker" required class="w-full border p-2 rounded">
+                <label class="block text-sm font-medium">Available Times</label>
+                <select name="time_slot" id="time-slot" required class="w-full border p-2 rounded"></select>
             </div>
-            <div class="bg-white p-3 rounded shadow flex items-center gap-4">
-                <img src="https://placehold.co/80x80?text=Cali" class="rounded">
-                <div class="flex-1">
-                    <p class="font-bold">California Roll ($10)</p>
-                    <p class="text-xs text-gray-500">Crab, Cucumber, Avocado</p>
-                    <input type="number" name="California_Roll_Qty" min="0" value="0" class="border w-16 mt-1 rounded px-1">
-                </div>
+
+            <h2 class="font-bold text-lg my-4">4. Contact Info</h2>
+            <div class="bg-white p-4 rounded shadow space-y-3">
+                <input type="text" name="name" placeholder="Full Name" required class="w-full border p-2 rounded">
+                <input type="email" name="email" placeholder="Email Address" required class="w-full border p-2 rounded">
+                <input type="tel" name="phone" placeholder="Phone Number" required class="w-full border p-2 rounded">
             </div>
-        </div>
 
-        <h2 class="font-bold text-lg mb-4">2. Schedule Delivery</h2>
-        <div class="bg-white p-4 rounded shadow space-y-3">
-            <p class="text-xs text-red-600 font-bold italic">Orders for next week close Friday at 9 PM.</p>
-            <label class="block text-sm font-medium">Delivery Date</label>
-            <input type="date" name="delivery_date" id="delivery_date" required class="w-full border p-2 rounded">
-            
-            <label class="block text-sm font-medium">Time Slot</label>
-            <select name="delivery_slot" required class="w-full border p-2 rounded">
-                <option value="">Select a time...</option>
-                <option value="10am-11am">10:00 AM - 11:00 AM</option>
-                <option value="3pm-4pm">03:00 PM - 04:00 PM</option>
-            </select>
-        </div>
-
-        <h2 class="font-bold text-lg my-4">3. Your Info</h2>
-        <div class="bg-white p-4 rounded shadow space-y-3">
-            <input type="text" name="name" placeholder="Full Name" required class="w-full border p-2 rounded">
-            <input type="email" name="email" placeholder="Email Address" required class="w-full border p-2 rounded">
-            <input type="tel" name="phone" placeholder="Phone Number" required class="w-full border p-2 rounded">
-            <textarea name="modifications" placeholder="Modifications/Allergies?" class="w-full border p-2 rounded"></textarea>
-        </div>
-
-        <button type="submit" class="fixed bottom-4 left-4 right-4 bg-orange-600 text-white font-bold py-4 rounded-full shadow-lg hover:bg-orange-700 transition-colors">Request Order</button>
-    </form>
+            <button type="submit" class="fixed bottom-4 left-4 right-4 bg-orange-600 text-white font-bold py-4 rounded-full shadow-lg">Request Order (<span id="total-price">$0</span>)</button>
+        </form>
+    </div>
 
     <script>
-        const dateInput = document.getElementById('delivery_date');
-        const now = new Date();
-        
-        // Simple Logic: Block past dates
-        const tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        dateInput.min = tomorrow.toISOString().split('T')[0];
+        // --- DASHBOARD SETTINGS (Modify items/dates here) ---
+        const MENU_ITEMS = [
+            { id: 1, name: "Salmon Roll", price: 12, ingredients: "Salmon, Avocado", img: "https://placehold.co/80" },
+            { id: 2, name: "California Roll", price: 10, ingredients: "Crab, Cucumber", img: "https://placehold.co/80" }
+        ];
 
-        document.getElementById('orderForm').onsubmit = function(e) {
-            const salmon = parseInt(document.getElementsByName('Salmon_Roll_Qty')[0].value);
-            const cali = parseInt(document.getElementsByName('California_Roll_Qty')[0].value);
-            
-            if (salmon === 0 && cali === 0) {
-                alert("Please add at least one item to your cart.");
-                return false;
-            }
-            return true;
+        const BLOCKED_DATES = ["2024-12-25"]; // Format: YYYY-MM-DD
+        const TIME_CONFIG = {
+            "default": ["10am-11am", "11am-12pm", "3pm-4pm", "4pm-5pm"],
+            "2024-12-31": ["10am-11am"] // Example: Custom times for specific date
         };
+
+        // --- ENGINE ---
+        let cart = [];
+
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = MENU_ITEMS.map(item => `
+                <div class="bg-white p-3 rounded shadow flex items-center gap-4">
+                    <img src="${item.img}" class="rounded w-16 h-16">
+                    <div class="flex-1">
+                        <p class="font-bold">${item.name} ($${item.price})</p>
+                        <p class="text-xs text-gray-500">${item.ingredients}</p>
+                        <button onclick="addToCart(${item.id})" class="mt-2 bg-black text-white text-xs px-3 py-1 rounded">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.addToCart = (id) => {
+            const item = MENU_ITEMS.find(i => i.id === id);
+            cart.push({ ...item, cartId: Date.now(), notes: "" });
+            updateCart();
+        };
+
+        window.removeItem = (cartId) => {
+            cart = cart.filter(i => i.cartId !== cartId);
+            updateCart();
+        };
+
+        function updateCart() {
+            const container = document.getElementById('cart-container');
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 italic">Cart is empty...</p>`;
+                document.getElementById('total-price').innerText = "$0";
+                return;
+            }
+
+            let html = "";
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                html += `
+                    <div class="border-b py-2">
+                        <div class="flex justify-between font-bold">
+                            <span>${item.name} - $${item.price}</span>
+                            <button onclick="removeItem(${item.cartId})" class="text-red-500">✕</button>
+                        </div>
+                        <input type="text" placeholder="Modifications?" onchange="updateNote(${item.cartId}, this.value)" class="w-full text-xs border p-1 mt-1 rounded">
+                    </div>
+                `;
+            });
+            container.innerHTML = html + `<div class="pt-2 font-bold text-right text-lg">Total: $${total}</div>`;
+            document.getElementById('total-price').innerText = `$${total}`;
+            document.getElementById('hidden-cart-data').value = JSON.stringify(cart);
+        }
+
+        window.updateNote = (cartId, val) => {
+            const item = cart.find(i => i.cartId === cartId);
+            if (item) item.notes = val;
+            document.getElementById('hidden-cart-data').value = JSON.stringify(cart);
+        };
+
+        // Date & Time Logic
+        const dateInput = document.getElementById('date-picker');
+        dateInput.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            if (BLOCKED_DATES.includes(selected)) {
+                alert("Sorry, we are closed on this date.");
+                e.target.value = "";
+                return;
+            }
+            const slots = TIME_CONFIG[selected] || TIME_CONFIG["default"];
+            document.getElementById('time-slot').innerHTML = slots.map(s => `<option value="${s}">${s}</option>`).join('');
+        });
+
+        renderMenu();
+        updateCart();
     </script>
 </body>
 </html>
