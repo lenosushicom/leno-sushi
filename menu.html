@@ -9,9 +9,40 @@
         body { font-family: 'Montserrat', sans-serif; background-color: #F2F0E9; color: #1a1a1a; }
         .gold-text { color: #C5A059; }
         .border-gold { border-color: #C5A059; }
+        /* Gmail Icon Colors */
+        .gmail-red { color: #EA4335; }
     </style>
 </head>
-<body class="pb-16">
+<body class="pb-16 relative">
+    
+    <div id="email-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center backdrop-blur-sm" onclick="closeModal()">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-xs w-full text-center mx-4" onclick="event.stopPropagation()">
+            <h3 class="font-bold text-lg mb-6 text-gray-800">Choose App</h3>
+            <div class="flex justify-center gap-8">
+                
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lenosushi.com@gmail.com" target="_blank" class="flex flex-col items-center gap-2 group">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-red-50 transition">
+                        <svg viewBox="0 0 24 24" class="w-8 h-8 gmail-red" fill="currentColor">
+                            <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-semibold text-gray-600">Gmail</span>
+                </a>
+
+                <a href="mailto:lenosushi.com@gmail.com" class="flex flex-col items-center gap-2 group">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-blue-600">
+                            <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                            <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                        </svg>
+                    </div>
+                    <span class="text-xs font-semibold text-gray-600">Mail App</span>
+                </a>
+            </div>
+            <button onclick="closeModal()" class="mt-6 text-gray-400 text-sm hover:text-black">Cancel</button>
+        </div>
+    </div>
+
     <header class="text-center py-10 px-4">
         <h1 class="text-5xl font-semibold tracking-widest uppercase mb-2">Leno</h1>
         <div class="flex items-center justify-center gap-4 mb-2">
@@ -22,19 +53,19 @@
         <p class="text-sm text-gray-500 italic mb-6">Simply crafted. Bold in flavor.</p>
 
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 text-sm font-semibold">
-            <a href="sms:+12513912719" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 transition">
+            <a href="sms:+12513912719" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 transition w-64 md:w-auto justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-[#C5A059]">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                 </svg>
                 +1 (251) 391-2719
             </a>
             
-            <a href="mailto:lenosushi.com@gmail.com" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 transition">
+            <button onclick="openModal()" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 transition w-64 md:w-auto justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-[#C5A059]">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                 </svg>
                 lenosushi.com@gmail.com
-            </a>
+            </button>
         </div>
     </header>
 
@@ -170,15 +201,13 @@
             </div>
         </div>
 
-        <div class="max-w-md mx-auto text-center border border-dashed border-gray-400 p-6 rounded-lg mb-12 relative">
+        <div class="max-w-md mx-auto text-center border border-dashed border-gray-400 p-6 rounded-lg mb-12">
             
-            <div class="absolute -top-4 left-0 right-0">
-                <span class="bg-white px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#C5A059] border border-[#C5A059] rounded-full">
-                    Note: Every item includes 1 Soy Sauce
-                </span>
-            </div>
+            <p class="text-xs font-bold uppercase tracking-wide text-[#C5A059] mb-4">
+                * Note: Every item includes 1 Soy Sauce
+            </p>
 
-            <h3 class="text-lg font-bold uppercase mb-4 tracking-widest mt-2">Extra Sauces</h3>
+            <h3 class="text-lg font-bold uppercase mb-4 tracking-widest border-t border-gray-200 pt-4">Extra Sauces</h3>
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between max-w-xs mx-auto">
                     <span>Extra Soy Sauce</span>
@@ -199,5 +228,14 @@
             &copy; 2026 Leno Sushi. Mobile, AL. | Simply Crafted. Bold in Flavor.
         </div>
     </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('email-modal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('email-modal').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
